@@ -27,11 +27,12 @@ async function retry (methodFn, beforeRetry, times) {
 }
 
 class MicrosoftAuthFlow {
-  constructor (username = '', cache = __dirname, options = {}, codeCallback) {
+  constructor (username = '', cache = __dirname, options = {}, codeCallback, successCallback) {
     this.username = username
     this.options = options
     this.initTokenManagers(username, cache)
     this.codeCallback = codeCallback
+    this.successCallback = successCallback
   }
 
   initTokenManagers (username, cache) {
@@ -100,6 +101,8 @@ class MicrosoftAuthFlow {
       } else { // We don't get extra account data here per scope
         console.info('[msa] Signed in with Microsoft')
       }
+
+      if (this.successCallback) this.successCallback()
 
       debug('[msa] got auth result', ret)
       return ret.accessToken
